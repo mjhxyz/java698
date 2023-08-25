@@ -52,10 +52,12 @@ public class P698Utils {
          * 应用类型
          * ----
          * 0x05: 读取请求
-         * 0x02: 读取若干个对象属性
+         *   0x01: 读取单个对象属性
+         *   0x02: 读取若干个对象属性
          * ----
+         *
          */
-        private byte[] appType = new byte[]{0x05, 0x02};
+        private byte[] appType = new byte[]{0x05, 0x01};
 
         public P698Msg build() {
             int curInvokeId = nextInvokeId();
@@ -73,7 +75,9 @@ public class P698Utils {
             totalLength += 2; // 服务类型 + 服务参数 eg: 0x05 0x02: 读取若干个对象属性
             // 服务优先级&服务序号
             totalLength += 1; // 服务优先级&服务序号
-            totalLength += 1; // SeqOf长度
+            if(attrEnums.size() > 1) {  // 获取多个对象属性, 才有 SeqOf
+                totalLength += 1; // SeqOf长度
+            }
             for (AttrEnum attrEnum : attrEnums) {
                 totalLength += 1;
                 totalLength += attrEnum.getCode().length; // 特征0，属性0
@@ -101,9 +105,11 @@ public class P698Utils {
             System.arraycopy(appType, 0, data, 14, 2); // 服务类型
             // 序号和优先标志
             data[16] = (byte) curInvokeId; // 优先标志:0 一般, 服务序号=5, 和 response APD 中，其值与对应.request APDU 中的相等
+            int index = 17;
             // SeqOf长度
-            data[17] = (byte) attrEnums.size(); // 指标长度
-            int index = 18;
+            if(attrEnums.size() > 1) {
+                data[index++] = (byte) attrEnums.size(); // 指标长度
+            }
             for (AttrEnum attrEnum : attrEnums) {
                 System.arraycopy(attrEnum.getCode(), 0, data, index, attrEnum.getCode().length); // 属性0
                 index += attrEnum.getCode().length;
@@ -131,7 +137,9 @@ public class P698Utils {
 
         public P698MsgBuilder addAttr(AttrEnum attrEnum) {
             attrEnums.add(attrEnum);
-            appType[1] = (byte) (attrEnums.size());
+            if(attrEnums.size() > 1) {
+                appType[1] = (byte) 0x02;
+            }
             return this;
         }
     }

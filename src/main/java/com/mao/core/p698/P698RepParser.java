@@ -106,7 +106,11 @@ public class P698RepParser {
         // 4.1 读取链路的操作码 & 操作参数
         // eg: 0x85 0x02 读取若干个属性
         //     0x85 0x01 读取单个属性
-        byte opCode = buffer.get(appOffset++);
+        int opCode = buffer.get(appOffset++);
+        if(opCode == 0xee) {
+            // 异常响应出现
+            MLogger.log("异常响应出现");
+        }
         byte opParam = buffer.get(appOffset++);
         // 4.2 获取优先级 & ACD & 服务序号
         // bit7: 服务优先级
@@ -153,6 +157,11 @@ public class P698RepParser {
             if(resultType == 0x00) { // 0:(错误)
                 byte darType = buffer.get(appOffset++); // 这个就是 错误码
                 attrObj.setErrorCode(darType);
+                rep.addAttr(attrObj);
+                continue;
+            } else if (resultType == 0xee) {
+                // 0xEE: 响应异常
+                attrObj.setErrorCode(resultType);
                 rep.addAttr(attrObj);
                 continue;
             }
