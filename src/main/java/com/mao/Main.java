@@ -11,8 +11,14 @@ import java.util.concurrent.TimeUnit;
 
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
+        // 获取两个属性
         String hexStr = "68 1C 00 43 05 39 12 19 08 37 00 0B 7A 52 05 02 05 02 00 10 02 00 00 20 02 00 00 8D 28 16";
+        // 获取一个属性
 //        hexStr = "68 17 00 43 05 39 12 19 08 37 00 0b 63 10 05 01 10 00 10 02 00 00 65 5f 16";
+        // 获取三个属性
+        hexStr = "68 20 00 43 05 39 12 19 08 37 00 0b 4a 23 05 02 1e 03 00 00 02 00 00 10 02 00 00 20 02 00 00 7f 08 16";
+        // 读取错误的情况
+        hexStr = "68 17 00 43 05 39 12 19 08 37 00 0b 63 10 05 01 30 20 00 02 00 00 35 79 16";
 
 //        SampleTCPClient client = new SampleTCPClient("127.0.0.1", 9876, 5000);
 //        byte[] result = client.request(data);
@@ -40,6 +46,7 @@ public class Main {
             respList.add(b);
         }
 
-        P698Rep parse = P698RepParser.parse(respList);
+        P698Rep rep = P698RepParser.parse(respList);
+        System.out.println(rep);
     }
 }

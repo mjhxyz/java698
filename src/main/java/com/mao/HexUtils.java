@@ -12,6 +12,10 @@ public class HexUtils {
         for (byte b : bytes) {
             hexString.append(String.format("%02x", b)).append(" ");
         }
+        // 去除最后一个空格
+        if(hexString.length() > 0) {
+            hexString.deleteCharAt(hexString.length() - 1);
+        }
         return hexString.toString();
     }
 

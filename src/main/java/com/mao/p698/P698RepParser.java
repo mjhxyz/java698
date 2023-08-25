@@ -2,7 +2,9 @@ package com.mao.p698;
 
 import com.mao.HexUtils;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * 698 协议响应解析器
@@ -37,6 +39,8 @@ public class P698RepParser {
             }
             index++;
         }
+
+        P698Rep rep = new P698Rep(); // 用于存放解析后的数据
 
         // 到这里后, buffer 中的数据应该是从头部开始的
 
@@ -118,53 +122,83 @@ public class P698RepParser {
 
         byte attrNum = 0; // 读取属性的个数
 
-        if(opParam == 0x02) {
-            log("读取若干个属性");
-        }
-
         // 4.3 如果是获取若干个属性，则需要先获取个数
-        if(opParam == 0x02) {
+        if (opParam == 0x02) {
             attrNum = buffer.get(appOffset++);
             log("读取属性的个数:" + attrNum);
-        }else if(opParam == 0x01) {
+        } else if (opParam == 0x01) {
             attrNum = 1;
         }
 
         // 5. 循环获取属性
         for (byte i = 0; i < attrNum; ++i) {
+            P698Attr attrObj = new P698Attr();
+
             // 5.4 OAD 对象属性描述符 4B
             byte[] oi = new byte[2];
             oi[0] = buffer.get(appOffset++);
             oi[1] = buffer.get(appOffset++);
+            attrObj.setOI(oi);
+
             // bit0…bit4 编码表示对象属性编号，取值 0…31，其中 0 表示整个对象属性，即对象的所有属性；
             // bit5…bit7 编码表示属性特征，属性特征是对象同一个属性 在不同快照环境下取值模式，取值 0…7，特征含义在具体类 属性中描述。
             byte attr = buffer.get(appOffset++);
             int attrId = attr & 0x1F;
             int attrType = (attr & 0xE0) >> 5;
+            attrObj.setAttrId(attrId);
+
             // 属性内元素索引——00H 表示整个属性全部内容。如果属性是一个 结构或数组，01H 指向对象属性的第一个元素；如果属性是一个记 录型的存储区，非零值 n 表示最近第 n 次的记录。
             byte attrIndex = buffer.get(appOffset++);
+
             // 5.5 结果类型 1(数据)
             byte resultType = buffer.get(appOffset++);
+            if(resultType == 0x00) { // 0:(错误)
+                byte darType = buffer.get(appOffset++); // 这个就是 错误码
+                attrObj.setErrorCode(darType);
+                rep.addAttr(attrObj);
+                continue;
+            }
+
             // 5.6 类型
             byte type = buffer.get(appOffset++); // 类型:1 数组
             // 5.7 数组元素个数
             byte arrayNum = buffer.get(appOffset++);
+            List<Object> tempCurAttrData = new ArrayList<>();
 
             for (byte j = 0; j < arrayNum; j++) {
                 // 获取数据的基本类型
                 byte typeId = buffer.get(appOffset++);
                 // 假设是浮点数, 那就占用 4B
                 if (typeId == 0x06) {
-                    byte[] value = new byte[4];
-                    value[0] = buffer.get(appOffset++);
-                    value[1] = buffer.get(appOffset++);
-                    value[2] = buffer.get(appOffset++);
-                    value[3] = buffer.get(appOffset++);
-                    // 5.8 获取数据
-                    float f = HexUtils.bytes2float(value);
-                    log("得到的结果 = " + f);
+                    // double-long-unsigned 无符号
+                    byte[] valueBytes = new byte[4];
+                    valueBytes[0] = buffer.get(appOffset++);
+                    valueBytes[1] = buffer.get(appOffset++);
+                    valueBytes[2] = buffer.get(appOffset++);
+                    valueBytes[3] = buffer.get(appOffset++);
+                    // 读取数据
+                    double value = HexUtils.bytes2float(valueBytes);
+                    tempCurAttrData.add(value);
+                    log("获取 double-long-unsigned 数据: " + value);
+                } else if (typeId == 0x05) {
+                    // double-long 有符号
+                    byte[] valueBytes = new byte[4];
+                    valueBytes[0] = buffer.get(appOffset++);
+                    valueBytes[1] = buffer.get(appOffset++);
+                    valueBytes[2] = buffer.get(appOffset++);
+                    valueBytes[3] = buffer.get(appOffset++);
+                    // 读取数据
+                    double value = HexUtils.bytes2float(valueBytes);
+                    tempCurAttrData.add(value);
+                    log("获取 double-long 数据: " + value);
                 }
+                // TODO 可能还涉及到 换算-倍数因子的指数
             }
+
+            // 5.8 将数据添加到属性对象中
+            attrObj.setData(tempCurAttrData);
+            // 5.9 将属性对象添加到报文对象中
+            rep.addAttr(attrObj);
         }
 
         // 6. 获取跟随上报信息域
@@ -195,6 +229,6 @@ public class P698RepParser {
             return parse(buffer); // 重新解析
         }
         log("解析成功!!!");
-        return new P698Rep();
+        return rep;
     }
 }
