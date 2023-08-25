@@ -1,5 +1,7 @@
 package com.mao;
 
+import java.util.List;
+
 public class HexUtils {
     public static byte[] hexStringToBytes(String hexString) {
         return getBytes(hexString);
@@ -57,5 +59,38 @@ public class HexUtils {
         byte[] subBytes = new byte[end - start];
         System.arraycopy(bytes, start, subBytes, 0, end - start);
         return subBytes;
+    }
+
+    public static byte[] subBytesList(List<Byte> bytes, int start, int end) {
+        byte[] subBytes = new byte[end - start];
+        for (int i = start; i < end; i++) {
+            subBytes[i - start] = bytes.get(i);
+        }
+        return subBytes;
+    }
+
+    public static boolean bytesEquals(byte[] src, byte[] other) {
+        if (src.length != other.length) {
+            return false;
+        }
+        for (int i = 0; i < src.length; i++) {
+            if (src[i] != other[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // 小端转换
+    public static float bytes2float(byte[] bytes) {
+        int l;
+        l = bytes[0];
+        l &= 0xff;
+        l |= ((long) bytes[1] << 8);
+        l &= 0xffff;
+        l |= ((long) bytes[2] << 16);
+        l &= 0xffffff;
+        l |= ((long) bytes[3] << 24);
+        return Float.intBitsToFloat(l);
     }
 }
