@@ -1,4 +1,4 @@
-package com.mao.conn;
+package com.mao.core.conn;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;

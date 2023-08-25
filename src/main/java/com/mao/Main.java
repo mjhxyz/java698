@@ -1,14 +1,12 @@
 package com.mao;
 
-import com.mao.conn.DataFuture;
-import com.mao.conn.NettyClient;
-import com.mao.p698.AttrEnum;
-import com.mao.p698.P698Rep;
-import com.mao.p698.P698RepParser;
-import com.mao.p698.P698Utils;
+import com.mao.core.conn.DataFuture;
+import com.mao.core.conn.NettyClient;
+import com.mao.core.p698.AttrEnum;
+import com.mao.core.p698.P698Rep;
+import com.mao.core.p698.P698Utils;
 
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 
 public class Main {

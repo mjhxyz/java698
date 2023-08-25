@@ -1,7 +1,7 @@
-package com.mao.conn;
+package com.mao.core.conn;
 
-import com.mao.p698.P698Rep;
-import com.mao.p698.P698Utils;
+import com.mao.core.p698.P698Rep;
+import com.mao.core.p698.P698Utils;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;

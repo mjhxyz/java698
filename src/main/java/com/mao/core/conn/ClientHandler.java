@@ -1,8 +1,8 @@
-package com.mao.conn;
+package com.mao.core.conn;
 
 import com.mao.HexUtils;
-import com.mao.p698.P698Rep;
-import com.mao.p698.P698RepParser;
+import com.mao.core.p698.P698Rep;
+import com.mao.core.p698.P698RepParser;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;

@@ -1,4 +1,4 @@
-package com.mao.p698;
+package com.mao.core.p698;
 
 /**
  * 698 帧/头部校验工具

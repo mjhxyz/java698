@@ -1,4 +1,4 @@
-package com.mao.conn;
+package com.mao.core.conn;
 
 public abstract class AbstractTCPClient implements ITCPClient{
     private String host;

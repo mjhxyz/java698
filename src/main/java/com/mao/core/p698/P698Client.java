@@ -1,6 +1,6 @@
-package com.mao.p698;
+package com.mao.core.p698;
 
-import com.mao.conn.ITCPClient;
+import com.mao.core.conn.ITCPClient;
 
 
 public class P698Client {

@@ -1,8 +1,6 @@
-package com.mao.p698;
+package com.mao.core.p698;
 
 import com.mao.HexUtils;
-
-import java.util.Arrays;
 
 /**
  * 698 协议的对象属性描述

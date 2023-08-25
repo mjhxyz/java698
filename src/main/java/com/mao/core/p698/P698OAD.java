@@ -1,4 +1,4 @@
-package com.mao.p698;
+package com.mao.core.p698;
 
 /**
  * 698 对象属性描述符

@@ -1,4 +1,4 @@
-package com.mao.p698;
+package com.mao.core.p698;
 
 import java.util.HashMap;
 import java.util.Map;
