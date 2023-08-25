@@ -10,6 +10,7 @@ import java.util.List;
  */
 public class P698Rep {
     // 响应的对象属性描述
+    private int invokeId = 0; // 调用标识
     private List<P698Attr> attrs = new ArrayList<>();
 
     public List<P698Attr> getAttrs() {
@@ -20,10 +21,23 @@ public class P698Rep {
         attrs.add(attr);
     }
 
+    public int getInvokeId() {
+        return invokeId;
+    }
+
+    public void setInvokeId(int invokeId) {
+        this.invokeId = invokeId;
+    }
+
+    public void setAttrs(List<P698Attr> attrs) {
+        this.attrs = attrs;
+    }
+
     @Override
     public String toString() {
         return "P698Rep{" +
-                "attrs=" + attrs +
+                "invokeId=" + invokeId +
+                ", attrs=" + attrs +
                 '}';
     }
 }

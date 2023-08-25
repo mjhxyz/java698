@@ -16,9 +16,37 @@ public class P698Utils {
     private static final byte CLIENT_ADDRESS = 0x0b;
     private static final byte END = 0x16;
 
+    public static class P698Msg {
+        private byte[] rawData;
+        private int invokeId;
+
+        public byte[] getRawData() {
+            return rawData;
+        }
+
+        public void setRawData(byte[] rawData) {
+            this.rawData = rawData;
+        }
+
+        public int getInvokeId() {
+            return invokeId;
+        }
+
+        public void setInvokeId(int invokeId) {
+            this.invokeId = invokeId;
+        }
+    }
+
     public static class P698MsgBuilder {
         private byte[] meterAddress;
         private List<AttrEnum> attrEnums = new ArrayList<>();
+        private int invokeId = 0; // 服务序号 0~63
+
+        private synchronized int nextInvokeId() {
+            invokeId = (invokeId + 1) % 64;
+            return invokeId;
+        }
+
         /**
          * 应用类型
          * ----
@@ -28,7 +56,9 @@ public class P698Utils {
          */
         private byte[] appType = new byte[]{0x05, 0x02};
 
-        public byte[] build() {
+        public P698Msg build() {
+            int curInvokeId = nextInvokeId();
+
             // 计算总长度
             int totalLength = 0;
             totalLength += 1; // 头部
@@ -69,7 +99,7 @@ public class P698Utils {
             // APDU
             System.arraycopy(appType, 0, data, 14, 2); // 服务类型
             // 序号和优先标志
-            data[16] = 0x05; // 优先标志:0 一般, 服务序号=5, 和 response APD 中，其值与对应.request APDU 中的相等
+            data[16] = (byte) curInvokeId; // 优先标志:0 一般, 服务序号=5, 和 response APD 中，其值与对应.request APDU 中的相等
             // SeqOf长度
             data[17] = (byte) attrEnums.size(); // 指标长度
             int index = 18;
@@ -86,7 +116,11 @@ public class P698Utils {
             byte[] fcs = P698CS.getCrc(bytes2FCS);
             System.arraycopy(fcs, 0, data, index, 2);
             data[index + 2] = END; // 结束符
-            return data;
+
+            P698Msg msg = new P698Msg();
+            msg.setInvokeId(curInvokeId);
+            msg.setRawData(data);
+            return msg;
         }
 
         public P698MsgBuilder setMeterAddress(String meterAddress) {

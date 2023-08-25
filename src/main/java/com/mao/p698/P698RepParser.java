@@ -20,6 +20,14 @@ public class P698RepParser {
         System.out.println(msg);
     }
 
+    public static P698Rep parse(byte[] bytes) {
+        LinkedList<Byte> buffer = new LinkedList<>();
+        for (byte b : bytes) {
+            buffer.add(b);
+        }
+        return parse(buffer);
+    }
+
     public static P698Rep parse(LinkedList<Byte> buffer) {
         log("开始解析================================");
         // 解析 buffer 中的数据
@@ -116,9 +124,10 @@ public class P698RepParser {
         // bit6: （请求访问 ACD）——0：不请求，1：请求。
         // bit0~bit5: 服务序号
         byte respCtrl = buffer.get(appOffset++);
-        int priority = (ctrl & 0x80) >> 7;
-        int acd = (ctrl & 0x40) >> 6;
-        int serNum = ctrl & 0x3F;
+        int priority = (respCtrl & 0x80) >> 7;
+        int acd = (respCtrl & 0x40) >> 6;
+        int invokeId = respCtrl & 0x3F;
+        rep.setInvokeId(invokeId);
 
         byte attrNum = 0; // 读取属性的个数
 
