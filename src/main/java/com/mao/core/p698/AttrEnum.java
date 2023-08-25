@@ -1,6 +1,6 @@
 package com.mao.core.p698;
 
-import com.mao.HexUtils;
+import com.mao.common.HexUtils;
 
 public enum AttrEnum {
     // 电能量

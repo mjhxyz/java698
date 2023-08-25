@@ -8,7 +8,7 @@ import java.util.List;
  * @author mao
  * @date 2023/8/24 16:23
  */
-public class P698Rep {
+public class P698Resp {
     // 响应的对象属性描述
     private int invokeId = 0; // 调用标识
     private List<P698Attr> attrs = new ArrayList<>();

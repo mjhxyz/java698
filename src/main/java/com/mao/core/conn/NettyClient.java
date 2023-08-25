@@ -1,6 +1,6 @@
 package com.mao.core.conn;
 
-import com.mao.core.p698.P698Rep;
+import com.mao.core.p698.P698Resp;
 import com.mao.core.p698.P698Utils;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.Unpooled;
@@ -20,7 +20,7 @@ public class NettyClient {
     private EventLoopGroup group;
     private Channel channel;
     private ChannelHandler handler;
-    ConcurrentHashMap<Integer, DataFuture<P698Rep>> map = new ConcurrentHashMap<>();
+    ConcurrentHashMap<Integer, DataFuture<P698Resp>> map = new ConcurrentHashMap<>();
 
     public NettyClient(String host, int port) throws InterruptedException {
         this.host = host;
@@ -29,11 +29,11 @@ public class NettyClient {
         this.connect();
     }
 
-    public DataFuture<P698Rep> request(P698Utils.P698Msg p698Msg) throws InterruptedException {
+    public DataFuture<P698Resp> request(P698Utils.P698Msg p698Msg) throws InterruptedException {
         if(channel == null || !channel.isActive()) {
             this.connect();
         }
-        DataFuture<P698Rep> future = new DataFuture<>();
+        DataFuture<P698Resp> future = new DataFuture<>();
         map.put(p698Msg.getInvokeId(), future);
         channel.writeAndFlush(Unpooled.copiedBuffer(p698Msg.getRawData()));
         return future;

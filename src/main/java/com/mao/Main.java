@@ -1,9 +1,10 @@
 package com.mao;
 
+import com.mao.common.HexUtils;
 import com.mao.core.conn.DataFuture;
 import com.mao.core.conn.NettyClient;
 import com.mao.core.p698.AttrEnum;
-import com.mao.core.p698.P698Rep;
+import com.mao.core.p698.P698Resp;
 import com.mao.core.p698.P698Utils;
 
 import java.io.IOException;
@@ -31,8 +32,8 @@ public class Main {
 
         // ==================== 发送请求 ====================
         NettyClient client = new NettyClient("127.0.0.1", 9876);
-        DataFuture<P698Rep> requestFuture = client.request(p698Msg);
-        P698Rep resp = requestFuture.get(3, TimeUnit.SECONDS);
+        DataFuture<P698Resp> requestFuture = client.request(p698Msg);
+        P698Resp resp = requestFuture.get(3, TimeUnit.SECONDS);
         if(resp == null) {
             System.out.println("超时...");
         }

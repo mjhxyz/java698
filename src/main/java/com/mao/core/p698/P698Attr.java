@@ -1,6 +1,6 @@
 package com.mao.core.p698;
 
-import com.mao.HexUtils;
+import com.mao.common.HexUtils;
 
 /**
  * 698 协议的对象属性描述

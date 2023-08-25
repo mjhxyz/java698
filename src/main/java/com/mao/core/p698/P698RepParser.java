@@ -1,6 +1,7 @@
 package com.mao.core.p698;
 
-import com.mao.HexUtils;
+import com.mao.common.HexUtils;
+import com.mao.common.MLogger;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -16,20 +17,8 @@ public class P698RepParser {
     private static final Byte HEAD = 0x68;
     private static final Byte TAIL = 0x16;
 
-    public static void log(String msg) {
-        System.out.println(msg);
-    }
-
-    public static P698Rep parse(byte[] bytes) {
-        LinkedList<Byte> buffer = new LinkedList<>();
-        for (byte b : bytes) {
-            buffer.add(b);
-        }
-        return parse(buffer);
-    }
-
-    public static P698Rep parse(LinkedList<Byte> buffer) {
-        log("开始解析================================");
+    public static P698Resp parse(LinkedList<Byte> buffer) {
+        MLogger.log("开始解析================================");
         // 解析 buffer 中的数据
         if (buffer.size() < 12) { // 我的理解是 698 协议最小长度为 12
             return null;
@@ -48,7 +37,7 @@ public class P698RepParser {
             index++;
         }
 
-        P698Rep rep = new P698Rep(); // 用于存放解析后的数据
+        P698Resp rep = new P698Resp(); // 用于存放解析后的数据
 
         // 到这里后, buffer 中的数据应该是从头部开始的
 
@@ -70,7 +59,7 @@ public class P698RepParser {
         int serverAddrLen = (serverAddrStatus & 0x0F) + 1;
         boolean isLogicAddr = (serverAddrStatus & 0x30) != 0;
         int serverAddrType = (serverAddrStatus & 0xC0) >> 6;
-        log("服务器地址字节数: " + serverAddrLen + ", 是否逻辑地址: " + isLogicAddr + ", 服务器地址类型: " + serverAddrType);
+        MLogger.log("服务器地址字节数: " + serverAddrLen + ", 是否逻辑地址: " + isLogicAddr + ", 服务器地址类型: " + serverAddrType);
         if (buffer.size() < 8 - 1 + serverAddrLen) { // 8 是假设服务地址字节数为1的情况, 现在知道了服务地址字节数, 所以需要减去 1 再加
             return null;
         }
@@ -88,21 +77,21 @@ public class P698RepParser {
         // 2.7 检查 HCS 是否正确(除了头部的 1B, 其他的都需要参与校验)
         byte[] bytes2CS = HexUtils.subBytesList(buffer, 1, 6 + serverAddrLen);
         byte[] hcs = P698CS.getCrc(bytes2CS);
-        log("HCS校验的数据: " + HexUtils.bytesToHexString(bytes2CS));
+        MLogger.log("HCS校验的数据: " + HexUtils.bytesToHexString(bytes2CS));
         if (!HexUtils.bytesEquals(hcs, hcsBytes)) {
-            log("HCS 校验失败");
+            MLogger.log("HCS 校验失败");
             // 校验失败后, 丢弃 HCS 字段之前的数据, HCS 也丢了
             for (int i = 0; i < 7 + serverAddrLen; i++) {
                 buffer.pollFirst();
             }
             return parse(buffer); // 重新解析
         }
-        log("HCS 校验成功!");
+        MLogger.log("HCS 校验成功!");
         // 2.8  HCS 正确，这个时候就能解析出数据域的长度了
         int totalDataLen = HexUtils.bytes2int(lenBytes); // 数据域的长度,和保留位
         // bit0~bit13：为数据域的长度
         totalDataLen = totalDataLen & 0x3FFF; // 数据域的长度 不包括头部和尾部
-        log("数据域的长度: " + totalDataLen);
+        MLogger.log("数据域的长度: " + totalDataLen);
 
         // 3. 计算用户层数据长度, 去除了头部一直到 FCS 之前的数据, FCS 也去除
         //    7: 长度域 2B + 控制域 1B + 服务器地址标识 1B + 客户机地址 1B + HCS 2B
@@ -134,7 +123,7 @@ public class P698RepParser {
         // 4.3 如果是获取若干个属性，则需要先获取个数
         if (opParam == 0x02) {
             attrNum = buffer.get(appOffset++);
-            log("读取属性的个数:" + attrNum);
+            MLogger.log("读取属性的个数:" + attrNum);
         } else if (opParam == 0x01) {
             attrNum = 1;
         }
@@ -188,7 +177,7 @@ public class P698RepParser {
                     // 读取数据
                     double value = HexUtils.bytes2float(valueBytes);
                     tempCurAttrData.add(value);
-                    log("获取 double-long-unsigned 数据: " + value);
+                    MLogger.log("获取 double-long-unsigned 数据: " + value);
                 } else if (typeId == 0x05) {
                     // double-long 有符号
                     byte[] valueBytes = new byte[4];
@@ -199,7 +188,7 @@ public class P698RepParser {
                     // 读取数据
                     double value = HexUtils.bytes2float(valueBytes);
                     tempCurAttrData.add(value);
-                    log("获取 double-long 数据: " + value);
+                    MLogger.log("获取 double-long 数据: " + value);
                 }
                 // TODO 可能还涉及到 换算-倍数因子的指数
             }
@@ -220,7 +209,7 @@ public class P698RepParser {
         fcsBytes[1] = buffer.get(appOffset++);
         byte[] bytes2fcs = P698CS.getCrc(HexUtils.subBytesList(buffer, 1, buffer.size() - 3));
         if (!HexUtils.bytesEquals(fcsBytes, bytes2fcs)) {
-            log("FCS 校验失败");
+            MLogger.log("FCS 校验失败");
             // 校验失败后, 丢弃 FCS 字段之前的数据, FCS 也丢了
             for (int i = 0; i < buffer.size() - 2; i++) {
                 buffer.pollFirst();
@@ -230,14 +219,14 @@ public class P698RepParser {
         // 9. 最后一个字节是结束符
         byte end = buffer.get(appOffset++);
         if (!TAIL.equals(end)) {
-            log("结束符校验失败");
+            MLogger.log("结束符校验失败");
             // 校验失败后, 丢弃结束符之前的数据, 结束符也丢了
             for (int i = 0; i < buffer.size() - 1; i++) {
                 buffer.pollFirst();
             }
             return parse(buffer); // 重新解析
         }
-        log("解析成功!!!");
+        MLogger.log("解析成功!!!");
         return rep;
     }
 }

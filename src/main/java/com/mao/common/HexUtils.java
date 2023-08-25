@@ -1,4 +1,4 @@
-package com.mao;
+package com.mao.common;
 
 import java.util.List;
 
