@@ -22,8 +22,9 @@ public class Main {
 //        hexStr = "68 17 00 43 05 39 12 19 08 37 00 0b 63 10 05 01 30 20 00 02 00 00 35 79 16";
 //        byte[] data = HexUtils.hexStringToBytes(hexStr);
 
+        NettyClient client = new NettyClient("127.0.0.1", 9876);
         // ==================== 构建请求报文 ====================
-        P698Utils.P698MsgBuilder builder = P698Utils.getBuilder(); // builder 中有一个 invokeId
+        P698Utils.P698MsgBuilder builder = P698Utils.getBuilder(client.nextInvokeId()); // builder 中有一个 invokeId
         builder.addAttr(AttrEnum.P0010).
                 addAttr(AttrEnum.P0020);
         builder.setMeterAddress("39 12 19 08 37 00");
@@ -31,7 +32,6 @@ public class Main {
         System.out.println("构建的数据包:" + HexUtils.bytesToHexString(p698Msg.getRawData()));
 
         // ==================== 发送请求 ====================
-        NettyClient client = new NettyClient("127.0.0.1", 9876);
         DataFuture<P698Resp> requestFuture = client.request(p698Msg);
         P698Resp resp = requestFuture.get(3, TimeUnit.SECONDS);
         if(resp == null) {

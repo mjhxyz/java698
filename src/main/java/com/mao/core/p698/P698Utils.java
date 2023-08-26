@@ -5,6 +5,10 @@ import com.mao.common.MLogger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 /**
  * 698协议工具类
@@ -41,11 +45,10 @@ public class P698Utils {
     public static class P698MsgBuilder {
         private byte[] meterAddress;
         private List<AttrEnum> attrEnums = new ArrayList<>();
-        private int invokeId = 0; // 服务序号 0~63
+        private final Supplier<Integer> invokeIdSupplier;
 
-        private synchronized int nextInvokeId() {
-            invokeId = (invokeId + 1) % 64;
-            return invokeId;
+        public P698MsgBuilder(Supplier<Integer> invokeIdSupplier) {
+            this.invokeIdSupplier = invokeIdSupplier;
         }
 
         /**
@@ -60,7 +63,7 @@ public class P698Utils {
         private byte[] appType = new byte[]{0x05, 0x01};
 
         public P698Msg build() {
-            int curInvokeId = nextInvokeId();
+            int curInvokeId = invokeIdSupplier.get();
 
             // 计算总长度
             int totalLength = 0;
@@ -144,7 +147,7 @@ public class P698Utils {
         }
     }
 
-    public static P698MsgBuilder getBuilder() {
-        return new P698MsgBuilder();
+    public static P698MsgBuilder getBuilder(Supplier<Integer> invokeIdSupplier) {
+        return new P698MsgBuilder(invokeIdSupplier);
     }
 }

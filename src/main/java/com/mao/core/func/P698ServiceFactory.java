@@ -10,8 +10,7 @@ import com.mao.core.p698.P698Utils;
  */
 public class P698ServiceFactory {
     public static P698Service createService(String host, int port) throws InterruptedException {
-        P698Utils.P698MsgBuilder builder = P698Utils.getBuilder();
         NettyClient nettyClient = new NettyClient(host, port);
-        return new P698Service(builder, nettyClient);
+        return new P698Service(nettyClient);
     }
 }

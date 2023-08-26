@@ -186,7 +186,7 @@ public class P698RepParser {
                     // 读取数据
                     double value = HexUtils.bytes2float(valueBytes);
                     tempCurAttrData.add(value);
-                    MLogger.log("获取 double-long-unsigned 数据: " + value);
+                    // MLogger.log("获取 double-long-unsigned 数据: " + value);
                 } else if (typeId == 0x05) {
                     // double-long 有符号
                     byte[] valueBytes = new byte[4];
@@ -197,7 +197,7 @@ public class P698RepParser {
                     // 读取数据
                     double value = HexUtils.bytes2float(valueBytes);
                     tempCurAttrData.add(value);
-                    MLogger.log("获取 double-long 数据: " + value);
+                    // MLogger.log("获取 double-long 数据: " + value);
                 }
                 // TODO 可能还涉及到 换算-倍数因子的指数
             }

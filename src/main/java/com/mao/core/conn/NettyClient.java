@@ -9,6 +9,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 
 /**
  * @author mao
@@ -20,6 +21,7 @@ public class NettyClient {
     private EventLoopGroup group;
     private Channel channel;
     private ChannelHandler handler;
+    private int invokeId = 0; // 服务序号 0~63 还是放在 NettyClient 中吧
     ConcurrentHashMap<Integer, DataFuture<P698Resp>> map = new ConcurrentHashMap<>();
 
     public NettyClient(String host, int port) throws InterruptedException {
@@ -46,5 +48,12 @@ public class NettyClient {
                 channel(NioSocketChannel.class).
                 handler(handler);
         this.channel = b.connect(host, port).sync().channel();
+    }
+
+    public Supplier<Integer> nextInvokeId() {
+        return () -> {
+            invokeId = (invokeId + 1) % 64;
+            return invokeId;
+        };
     }
 }

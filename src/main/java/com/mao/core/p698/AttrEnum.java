@@ -2,6 +2,8 @@ package com.mao.core.p698;
 
 import com.mao.common.HexUtils;
 
+import java.util.Arrays;
+
 public enum AttrEnum {
     // 电能量
     P0000("组合有功电能", HexUtils.toB("00 00")),
@@ -19,6 +21,15 @@ public enum AttrEnum {
 
     public byte[] getCode() {
         return code;
+    }
+
+    public static AttrEnum getAttrEnum(byte[] code) {
+        for (AttrEnum attrEnum : AttrEnum.values()) {
+            if (Arrays.equals(attrEnum.getCode(), code)) {
+                return attrEnum;
+            }
+        }
+        return null;
     }
 
     AttrEnum(String name, byte[] code) {

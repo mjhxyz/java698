@@ -6,8 +6,11 @@ package com.mao.common;
  * @date 2023/8/25 16:27
  */
 public class MLogger {
+    private static boolean debug = true;
     public static void log(Object o) {
-        System.out.println(o);
+        if (debug) {
+            System.out.println(o);
+        }
     }
 
     public static void log(String format, Object... args) {
