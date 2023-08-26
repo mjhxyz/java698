@@ -7,7 +7,19 @@ public class HexUtils {
         return getBytes(hexString);
     }
 
-    public static String bytesToHexString(byte[] bytes) {
+    public static String bytesList2HexString(List<Byte> bytes) {
+        StringBuilder hexString = new StringBuilder();
+        for (byte b : bytes) {
+            hexString.append(String.format("%02x", b)).append(" ");
+        }
+        // 去除最后一个空格
+        if(hexString.length() > 0) {
+            hexString.deleteCharAt(hexString.length() - 1);
+        }
+        return hexString.toString();
+    }
+
+    public static String bytes2HexString(byte[] bytes) {
         StringBuilder hexString = new StringBuilder();
         for (byte b : bytes) {
             hexString.append(String.format("%02x", b)).append(" ");

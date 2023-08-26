@@ -62,14 +62,14 @@ public class P698Attr {
     public String toString() {
         if(isError()) {
             return "P698Attr{" +
-                    "OI=[" + HexUtils.bytesToHexString(OI) + "]" +
+                    "OI=[" + HexUtils.bytes2HexString(OI) + "]" +
                     ", attrId=" + attrId +
                     ", errorCode=" + errorCode +
                     ", error='" + getError() + '\'' +
                     '}';
         }
         return "P698Attr{" +
-                "OI=[" + HexUtils.bytesToHexString(OI) + "]" +
+                "OI=[" + HexUtils.bytes2HexString(OI) + "]" +
                 ", attrId=" + attrId +
                 ", data=" + data +
                 '}';

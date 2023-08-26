@@ -5,6 +5,10 @@ import com.mao.core.func.P698ServiceFactory;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * 多线程请求测试
  * @author mao
@@ -18,22 +22,33 @@ public class MultithreadingTest {
 
     @BeforeAll
     static void init() throws InterruptedException {
-        service = P698ServiceFactory.createService(host, port);
+        try {
+            service = P698ServiceFactory.createService(host, port);
+        }catch (Exception e) {
+            System.out.println("创建 P698Service 失败");
+            fail(e);
+        }
     }
 
     @Test
     void test() throws InterruptedException {
-        // 20个线程同时调用
-        for (int i = 0; i < 10; i++) {
-            new Thread(() -> {
+        Thread[] threads = new Thread[5];
+        // 多个线程同时调用
+        for (int i = 0; i < threads.length; i++) {
+            Thread thread = new Thread(() -> {
                 try {
-                    service.getElec(meterAddress).forEach(System.out::println);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    List<Double> elec = service.getPapR(meterAddress);
+                    assertNotNull(elec);
+                    assertEquals(5, elec.size());
+                } catch (Exception e) {
+                    fail(e);
                 }
-            }).start();
+            });
+            thread.start();
+            threads[i] = thread;
         }
-        System.out.println("--------------------------------------------------");
-        Thread.sleep(10_000);
+        for (Thread thread : threads) {
+            thread.join();
+        }
     }
 }

@@ -5,9 +5,6 @@ import com.mao.common.MLogger;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
@@ -102,7 +99,7 @@ public class P698Utils {
             // HCS, 帧头部分除起始字符和HCS本身之外的所有字节的校验
             byte[] bytes2HCS = HexUtils.subBytes(data, 1, 12);
             byte[] hcs = P698CS.getCrc(bytes2HCS);
-            MLogger.log("进行HCS校验的数据: " + HexUtils.bytesToHexString(bytes2HCS));
+            MLogger.log("进行HCS校验的数据: " + HexUtils.bytes2HexString(bytes2HCS));
             System.arraycopy(hcs, 0, data, 12, 2);
             // APDU
             System.arraycopy(appType, 0, data, 14, 2); // 服务类型
@@ -122,7 +119,7 @@ public class P698Utils {
             data[index++] = 0x00; // 无时间标记
             // FCS, 帧头部分除起始字符和FCS本身之外的所有字节的校验
             byte[] bytes2FCS = HexUtils.subBytes(data, 1, index);
-            MLogger.log("进行FCS校验的数据: " + HexUtils.bytesToHexString(bytes2FCS));
+            MLogger.log("进行FCS校验的数据: " + HexUtils.bytes2HexString(bytes2FCS));
             byte[] fcs = P698CS.getCrc(bytes2FCS);
             System.arraycopy(fcs, 0, data, index, 2);
             data[index + 2] = END; // 结束符

@@ -29,7 +29,7 @@ public class Main {
                 addAttr(AttrEnum.P0020);
         builder.setMeterAddress("39 12 19 08 37 00");
         P698Utils.P698Msg p698Msg = builder.build();
-        System.out.println("构建的数据包:" + HexUtils.bytesToHexString(p698Msg.getRawData()));
+        System.out.println("构建的数据包:" + HexUtils.bytes2HexString(p698Msg.getRawData()));
 
         // ==================== 发送请求 ====================
         DataFuture<P698Resp> requestFuture = client.request(p698Msg);

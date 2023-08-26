@@ -9,6 +9,7 @@ import com.mao.core.p698.P698Resp;
 import com.mao.core.p698.P698Utils;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 698 服务类
@@ -17,9 +18,16 @@ import java.util.List;
  */
 public class P698Service {
     private NettyClient nettyClient;
+    private static final long DEFAULT_TIMEOUT = 5000;
+    private long timeout;
+
+    public P698Service(NettyClient nettyClient, long timeout) {
+        this.nettyClient = nettyClient;
+        this.timeout = timeout;
+    }
 
     public P698Service(NettyClient nettyClient) {
-        this.nettyClient = nettyClient;
+        this(nettyClient, DEFAULT_TIMEOUT);
     }
 
     /**
@@ -35,18 +43,22 @@ public class P698Service {
         }
         builder.setMeterAddress(meterAddress);
         P698Utils.P698Msg p698Msg = builder.build();
-        System.out.println("构建的数据包:" + HexUtils.bytesToHexString(p698Msg.getRawData()));
+        System.out.println("构建的数据包:" + HexUtils.bytes2HexString(p698Msg.getRawData()));
         DataFuture<P698Resp> request = this.nettyClient.request(p698Msg);
-        return request.get();
+        return request.get(timeout, TimeUnit.MILLISECONDS);
     }
 
     /**
-     * 读取 正向有功电能
+     * 读取正向有功电能
+     *
      * @param meterAddress 电表地址 eg: 39 12 19 08 37 00
      * @return
      */
-    public List<Double> getElec(String meterAddress) throws InterruptedException {
+    public List<Double> getPapR(String meterAddress) throws InterruptedException {
         P698Resp resp = get(meterAddress, AttrEnum.P0010);
+        if(resp == null) { // 超时
+            throw new RuntimeException("超时...");
+        }
         List<P698Attr> attrs = resp.getAttrs();
         for (P698Attr attr : attrs) {
             if (AttrEnum.getAttrEnum(attr.getOI()) == AttrEnum.P0010) {

@@ -77,7 +77,7 @@ public class P698RepParser {
         // 2.7 检查 HCS 是否正确(除了头部的 1B, 其他的都需要参与校验)
         byte[] bytes2CS = HexUtils.subBytesList(buffer, 1, 6 + serverAddrLen);
         byte[] hcs = P698CS.getCrc(bytes2CS);
-        MLogger.log("HCS校验的数据: " + HexUtils.bytesToHexString(bytes2CS));
+        MLogger.log("HCS校验的数据: " + HexUtils.bytes2HexString(bytes2CS));
         if (!HexUtils.bytesEquals(hcs, hcsBytes)) {
             MLogger.log("HCS 校验失败");
             // 校验失败后, 丢弃 HCS 字段之前的数据, HCS 也丢了
@@ -216,9 +216,13 @@ public class P698RepParser {
         byte[] fcsBytes = new byte[2];
         fcsBytes[0] = buffer.get(appOffset++);
         fcsBytes[1] = buffer.get(appOffset++);
-        byte[] bytes2fcs = P698CS.getCrc(HexUtils.subBytesList(buffer, 1, buffer.size() - 3));
-        if (!HexUtils.bytesEquals(fcsBytes, bytes2fcs)) {
-            MLogger.log("FCS 校验失败");
+        // eg 68 11 22 33 44 55 66 77 [88 99] 16 totalDataLen = 9
+        byte[] bytes2fcs = HexUtils.subBytesList(buffer, 1, totalDataLen - 1);
+
+        byte[] realFCS = P698CS.getCrc(bytes2fcs);
+        if (!HexUtils.bytesEquals(fcsBytes, realFCS)) {
+            MLogger.log("FCS 校验失败, 期望值: " + HexUtils.bytes2HexString(fcsBytes) + ", 实际值: " + HexUtils.bytes2HexString(realFCS));
+            MLogger.log("校验的数据为: " + HexUtils.bytes2HexString(bytes2fcs));
             // 校验失败后, 丢弃 FCS 字段之前的数据, FCS 也丢了
             for (int i = 0; i < buffer.size() - 2; i++) {
                 buffer.pollFirst();
@@ -228,7 +232,7 @@ public class P698RepParser {
         // 9. 最后一个字节是结束符
         byte end = buffer.get(appOffset++);
         if (!TAIL.equals(end)) {
-            MLogger.log("结束符校验失败");
+            MLogger.log("结束符校验失败: 期望值: " + TAIL + ", 实际值: " + end);
             // 校验失败后, 丢弃结束符之前的数据, 结束符也丢了
             for (int i = 0; i < buffer.size() - 1; i++) {
                 buffer.pollFirst();

@@ -29,10 +29,11 @@ public class ClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, ByteBuf data) throws Exception {
         byte[] bytes = new byte[data.readableBytes()];
         data.readBytes(bytes);
-        MLogger.log("接收到的数据:" + HexUtils.bytesToHexString(bytes));
         for (byte b : bytes) {
             buffer.add(b);
         }
+        MLogger.log("接收到的数据:" + HexUtils.bytes2HexString(bytes));
+        MLogger.log("现在的 buffer:" + HexUtils.bytesList2HexString(buffer));
         // 这里就得做解析，拿到 invokeId 了
         P698Resp resp = P698RepParser.parse(buffer);
         if(resp == null) {
