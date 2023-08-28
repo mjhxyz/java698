@@ -17,18 +17,17 @@ import java.util.function.Supplier;
  * @date 2023/8/24 13:55
  */
 public class NettyClient {
-    private String host;
-    private int port;
-    private EventLoopGroup group;
+    private final String host;
+    private final int port;
     private Channel channel;
-    private ChannelHandler handler;
+    private final ChannelHandler handler;
     private volatile int invokeId = 0; // 服务序号 0~63 还是放在 NettyClient 中吧
     ConcurrentHashMap<Integer, DataFuture<P698Resp>> map = new ConcurrentHashMap<>();
 
     public NettyClient(String host, int port) throws InterruptedException {
         this.host = host;
         this.port = port;
-        this.handler = new ClientHandler(map);
+        this.handler = new ClientHandler(map, this);
         this.connect();
     }
 
@@ -52,7 +51,7 @@ public class NettyClient {
     }
 
     public void connect() throws InterruptedException {
-        group = new NioEventLoopGroup();
+        EventLoopGroup group = new NioEventLoopGroup();
         Bootstrap b = new Bootstrap();
         b.group(group).
                 channel(NioSocketChannel.class).

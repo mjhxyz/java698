@@ -5,6 +5,7 @@ import com.mao.common.MLogger;
 import com.mao.core.p698.P698Resp;
 import com.mao.core.p698.P698RepParser;
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
@@ -16,14 +17,17 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author mao
  * @date 2023/8/24 13:59
  */
+@ChannelHandler.Sharable
 public class ClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
 
     private final LinkedList<Byte> buffer = new LinkedList<>();
+    private final NettyClient client;
 
-    private ConcurrentHashMap<Integer, DataFuture<P698Resp>> map;
+    private final ConcurrentHashMap<Integer, DataFuture<P698Resp>> map;
 
-    public ClientHandler(ConcurrentHashMap<Integer, DataFuture<P698Resp>> map) {
+    public ClientHandler(ConcurrentHashMap<Integer, DataFuture<P698Resp>> map, NettyClient client) {
         this.map = map;
+        this.client = client;
     }
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, ByteBuf data) throws Exception {
@@ -43,5 +47,19 @@ public class ClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
         int invokeId = resp.getInvokeId();
         DataFuture<P698Resp> future = map.get(invokeId);
         future.setResponse(resp);
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        MLogger.log("连接断开，重新连接...");
+        // 打印当前线程
+        Thread.sleep(1000); // 休眠 1s 重连
+        client.connect();
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        cause.printStackTrace();
+        ctx.close();
     }
 }

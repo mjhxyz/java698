@@ -31,7 +31,7 @@ public class MultiP698ServiceTest {
     static void init() {
         services = new P698Service[SERVICE_NUM];
         for(int i = 0; i < SERVICE_NUM; i++) {
-            services[i] = P698ServiceFactory.createService(host, port);
+            services[i] = P698ServiceFactory.createService(host, port, 20_000);
         }
     }
 
