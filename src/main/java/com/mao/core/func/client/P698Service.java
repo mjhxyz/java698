@@ -1,9 +1,9 @@
-package com.mao.core.func;
+package com.mao.core.func.client;
 
 import com.mao.common.HexUtils;
 import com.mao.common.MLogger;
-import com.mao.core.conn.DataFuture;
-import com.mao.core.conn.NettyClient;
+import com.mao.core.conn.client.DataFuture;
+import com.mao.core.conn.client.NettyClient;
 import com.mao.core.exception.P698TimeOutException;
 import com.mao.core.p698.AttrEnum;
 import com.mao.core.p698.P698Attr;

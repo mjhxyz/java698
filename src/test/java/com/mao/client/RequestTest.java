@@ -1,8 +1,8 @@
-package com.mao;
+package com.mao.client;
 
 import com.mao.common.HexUtils;
-import com.mao.core.conn.DataFuture;
-import com.mao.core.conn.NettyClient;
+import com.mao.core.conn.client.DataFuture;
+import com.mao.core.conn.client.NettyClient;
 import com.mao.core.p698.AttrEnum;
 import com.mao.core.p698.P698Resp;
 import com.mao.core.p698.P698Utils;

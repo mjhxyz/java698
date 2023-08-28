@@ -1,4 +1,4 @@
-package com.mao.core.conn;
+package com.mao.core.conn.client;
 
 import com.mao.common.HexUtils;
 import com.mao.common.MLogger;

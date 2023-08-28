@@ -1,10 +1,8 @@
-package com.mao.core.func;
+package com.mao.core.func.client;
 
-import com.mao.core.conn.NettyClient;
+import com.mao.core.conn.client.NettyClient;
 import com.mao.core.exception.P698ConnectException;
-import com.mao.core.p698.P698Utils;
 
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**

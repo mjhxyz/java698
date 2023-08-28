@@ -1,4 +1,4 @@
-package com.mao.core.conn;
+package com.mao.core.conn.client;
 
 import com.mao.core.p698.P698Resp;
 import com.mao.core.p698.P698Utils;
@@ -13,6 +13,7 @@ import java.util.function.Supplier;
 
 /**
  * 使用 Netty 和集中器进行连接
+ *
  * @author mao
  * @date 2023/8/24 13:55
  */
@@ -32,7 +33,7 @@ public class NettyClient {
     }
 
     public DataFuture<P698Resp> request(P698Utils.P698Msg p698Msg) throws InterruptedException {
-        if(channel == null || !channel.isActive()) {
+        if (channel == null || !channel.isActive()) {
             this.connect();
         }
         DataFuture<P698Resp> future = new DataFuture<>();

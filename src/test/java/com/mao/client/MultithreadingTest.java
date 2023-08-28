@@ -1,7 +1,7 @@
-package com.mao;
+package com.mao.client;
 
-import com.mao.core.func.P698Service;
-import com.mao.core.func.P698ServiceFactory;
+import com.mao.core.func.client.P698Service;
+import com.mao.core.func.client.P698ServiceFactory;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
