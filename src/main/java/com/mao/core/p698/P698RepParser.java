@@ -153,7 +153,7 @@ public class P698RepParser {
             byte attrIndex = buffer.get(appOffset++);
 
             // 5.5 结果类型 1(数据)
-            byte resultType = buffer.get(appOffset++);
+            int resultType = buffer.get(appOffset++) & 0xFF;
             if(resultType == 0x00) { // 0:(错误)
                 byte darType = buffer.get(appOffset++); // 这个就是 错误码
                 attrObj.setErrorCode(darType);

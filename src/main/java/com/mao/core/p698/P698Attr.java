@@ -12,7 +12,8 @@ public class P698Attr {
     private byte[] OI = new byte[2]; // 对象标志
     private int attrId = 0; // 属性 eg: 组合有功电能+0x02 总及费率电能量数组
     private Object data = null; // 数据
-    private byte errorCode = 0; // 错误码, 0: 无错误
+    // 使用 int 是因为 java 没有 unsigned char, 使用 int 模拟 unsigned char
+    private int errorCode = 0; // 错误码, 0: 无错误
 
     public byte[] getOI() {
         return OI;
@@ -30,11 +31,11 @@ public class P698Attr {
         this.attrId = attrId;
     }
 
-    public byte getErrorCode() {
+    public int getErrorCode() {
         return errorCode;
     }
 
-    public void setErrorCode(byte errorCode) {
+    public void setErrorCode(int errorCode) {
         this.errorCode = errorCode;
     }
 

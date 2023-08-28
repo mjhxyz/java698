@@ -41,7 +41,7 @@ public class P698Utils {
 
     public static class P698MsgBuilder {
         private byte[] meterAddress;
-        private List<AttrEnum> attrEnums = new ArrayList<>();
+        private final List<AttrEnum> attrEnums = new ArrayList<>();
         private final Supplier<Integer> invokeIdSupplier;
 
         public P698MsgBuilder(Supplier<Integer> invokeIdSupplier) {
