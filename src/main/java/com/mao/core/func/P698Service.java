@@ -92,6 +92,10 @@ public class P698Service {
         return id;
     }
 
+    /**
+     * 设置服务标志, 用于调试区分不同的服务
+     * @param id
+     */
     public void setId(int id) {
         this.id = id;
     }

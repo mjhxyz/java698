@@ -106,7 +106,7 @@ public class P698RepParser {
         // 4.1 读取链路的操作码 & 操作参数
         // eg: 0x85 0x02 读取若干个属性
         //     0x85 0x01 读取单个属性
-        int opCode = buffer.get(appOffset++);
+        int opCode = buffer.get(appOffset++) & 0xFF;
         if(opCode == 0xee) {
             // 异常响应出现
             MLogger.log("异常响应出现");

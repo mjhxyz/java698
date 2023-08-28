@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 /**
+ * 使用 Netty 和集中器进行连接
  * @author mao
  * @date 2023/8/24 13:55
  */

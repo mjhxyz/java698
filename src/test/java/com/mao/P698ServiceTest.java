@@ -4,7 +4,6 @@ import com.mao.core.func.P698Service;
 import com.mao.core.func.P698ServiceFactory;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestTemplate;
 
 import java.util.List;
 
