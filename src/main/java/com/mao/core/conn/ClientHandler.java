@@ -32,12 +32,12 @@ public class ClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
         for (byte b : bytes) {
             buffer.add(b);
         }
-        MLogger.log("接收到的数据:" + HexUtils.bytes2HexString(bytes));
-        MLogger.log("现在的 buffer:" + HexUtils.bytesList2HexString(buffer));
+        MLogger.log("接收到新的数据:" + HexUtils.bytes2HexString(bytes));
+        // MLogger.log("现在的 buffer:" + HexUtils.bytesList2HexString(buffer));
         // 这里就得做解析，拿到 invokeId 了
         P698Resp resp = P698RepParser.parse(buffer);
         if(resp == null) {
-            System.out.println("收到数据后，解析失败");
+            MLogger.log("收到数据后，解析失败...");
             return;
         }
         int invokeId = resp.getInvokeId();

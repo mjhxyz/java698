@@ -18,7 +18,7 @@ public class P698RepParser {
     private static final Byte TAIL = 0x16;
 
     public static P698Resp parse(LinkedList<Byte> buffer) {
-        MLogger.log("开始解析================================");
+        MLogger.log("开始解析响应的数据包...");
         // 解析 buffer 中的数据
         if (buffer.size() < 12) { // 我的理解是 698 协议最小长度为 12
             return null;
@@ -59,7 +59,7 @@ public class P698RepParser {
         int serverAddrLen = (serverAddrStatus & 0x0F) + 1;
         boolean isLogicAddr = (serverAddrStatus & 0x30) != 0;
         int serverAddrType = (serverAddrStatus & 0xC0) >> 6;
-        MLogger.log("服务器地址字节数: " + serverAddrLen + ", 是否逻辑地址: " + isLogicAddr + ", 服务器地址类型: " + serverAddrType);
+        // MLogger.log("服务器地址字节数: " + serverAddrLen + ", 是否逻辑地址: " + isLogicAddr + ", 服务器地址类型: " + serverAddrType);
         if (buffer.size() < 8 - 1 + serverAddrLen) { // 8 是假设服务地址字节数为1的情况, 现在知道了服务地址字节数, 所以需要减去 1 再加
             return null;
         }
@@ -91,7 +91,7 @@ public class P698RepParser {
         int totalDataLen = HexUtils.bytes2int(lenBytes); // 数据域的长度,和保留位
         // bit0~bit13：为数据域的长度
         totalDataLen = totalDataLen & 0x3FFF; // 数据域的长度 不包括头部和尾部
-        MLogger.log("数据域的长度: " + totalDataLen);
+        // MLogger.log("数据域的长度: " + totalDataLen);
 
         // 3. 计算用户层数据长度, 去除了头部一直到 FCS 之前的数据, FCS 也去除
         //    7: 长度域 2B + 控制域 1B + 服务器地址标识 1B + 客户机地址 1B + HCS 2B
@@ -240,6 +240,10 @@ public class P698RepParser {
             return parse(buffer); // 重新解析
         }
         MLogger.log("解析成功!!!");
+        // 删除已经解析的数据
+        for (int i = 0; i < appOffset; i++) {
+            buffer.pollFirst();
+        }
         return rep;
     }
 }

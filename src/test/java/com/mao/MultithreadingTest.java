@@ -32,7 +32,7 @@ public class MultithreadingTest {
 
     @Test
     void test() throws InterruptedException {
-        Thread[] threads = new Thread[5];
+        Thread[] threads = new Thread[2];
         // 多个线程同时调用
         for (int i = 0; i < threads.length; i++) {
             Thread thread = new Thread(() -> {

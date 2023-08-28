@@ -2,6 +2,7 @@ package com.mao.common;
 
 /**
  * 简单日志工具类, 调试用
+ *
  * @author mao
  * @date 2023/8/25 16:27
  */
