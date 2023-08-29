@@ -49,6 +49,10 @@ public class P698Attr {
         return (List<Long>) data;
     }
 
+    public List<byte[]> getDataAsByteList() {
+        return (List<byte[]>) data;
+    }
+
     public void setData(Object data) {
         this.data = data;
     }

@@ -71,4 +71,11 @@ public class ServiceGetAttrTest {
         TestUtils.assertDoubleEquals(6.383D, papSList.get(0));
         TestUtils.print("读取电流成功", papSList);
     }
+
+    @Test
+    public void testGetRelayStatus() throws InterruptedException {
+        int relayStatus = p698ServerService.getRelayStatus(meterAddress);
+        assertEquals(1, relayStatus);
+        TestUtils.print("读取继电器状态成功", relayStatus);
+    }
 }

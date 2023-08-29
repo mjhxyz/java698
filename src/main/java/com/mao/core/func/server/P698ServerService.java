@@ -143,6 +143,23 @@ public class P698ServerService {
         return this.get(meterAddress, (e) -> this.doScaleList(e.getDataAsLongList(), scale), AttrEnum.P2001);
     }
 
+
+    /**
+     * 获取电表继电器状态
+     * @param meterAddress 电表地址 eg: 39 12 19 08 37 00
+     * @return 0: 通 1: 断
+     */
+    public int getRelayStatus(String meterAddress) throws InterruptedException {
+        return this.get(meterAddress,
+                (e) -> {
+                    List<byte[]> byteList = e.getDataAsByteList();
+                    // 继电器状态在第三个状态字中 的 bit4
+                    byte b = byteList.get(2)[0];
+                    return (b & 0x10) >> 4;
+                },
+                AttrEnum.P2014);
+    }
+
     /**
      * 电能表结果根据scale进行转换
      * @param list 电能表结果

@@ -208,6 +208,10 @@ public class P698RepParser {
                     // 获取字节长度 0-8bit 1B, 9-16bit 2B, 向上取整
                     int byteLength = (bitLength + 7) / 8;
                     byte[] valueBytes = new byte[byteLength];
+                    for (int k = 0; k < byteLength; k++) {
+                        valueBytes[k] = buffer.get(appOffset++);
+                    }
+                    tempCurAttrData.add(valueBytes);
                 }
                 // TODO 可能还涉及到 换算-倍数因子的指数
             }
