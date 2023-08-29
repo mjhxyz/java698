@@ -15,7 +15,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.logging.Handler;
 
 /**
  * 698 TCP 服务
@@ -34,10 +36,15 @@ public class P698Server {
     private final AtomicInteger channelId = new AtomicInteger(0);
     private final AtomicInteger invokeId = new AtomicInteger(0);
     private Executor executor = Executors.newSingleThreadExecutor();
+    private List<Consumer<Channel>> connectionListeners = new ArrayList<>(); // 连接监听器
 
     public P698Server(String host, int port) {
         this.port = port;
         this.host = host;
+    }
+
+    public void addConnectionListener(Consumer<Channel> listener) {
+        connectionListeners.add(listener);
     }
 
     public Supplier<Integer> invokeSupplier() {
@@ -77,9 +84,16 @@ public class P698Server {
                             new ChannelInitializer<Channel>() {
                                 @Override
                                 protected void initChannel(Channel ch) throws Exception {
-                                    ch.pipeline().addLast(new P698ServerHandler(
+                                    P698ServerHandler handler = new P698ServerHandler(
                                             that.channelId.getAndIncrement(),
-                                            that.map));
+                                            that.map);
+                                    ch.pipeline().addLast(handler);
+                                    try{
+                                        connectionListeners.forEach(listener -> listener.accept(ch));
+                                    } catch (Exception e) {
+                                        // ignore listener exception
+                                        // TODO log
+                                    }
                                 }
                             })
                     .option(ChannelOption.SO_BACKLOG, 128)

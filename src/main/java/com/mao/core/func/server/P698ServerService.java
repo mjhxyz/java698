@@ -10,9 +10,11 @@ import com.mao.core.p698.AttrEnum;
 import com.mao.core.p698.P698Attr;
 import com.mao.core.p698.P698Resp;
 import com.mao.core.p698.P698Utils;
+import io.netty.channel.Channel;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -28,6 +30,15 @@ public class P698ServerService {
     private long timeout = 5_000;
 
     private Supplier<Integer> invokeSupplier;
+
+    /**
+     * 添加连接监听器
+     * @param listener 监听器
+     */
+    public P698ServerService addConnectionListener(Consumer<Channel> listener) {
+        server.addConnectionListener(listener);
+        return this;
+    }
 
     public P698ServerService setInvokeSupplier(Supplier<Integer> invokeSupplier) {
         this.invokeSupplier = invokeSupplier;
