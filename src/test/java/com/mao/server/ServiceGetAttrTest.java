@@ -1,5 +1,6 @@
 package com.mao.server;
 
+import com.mao.TestUtils;
 import com.mao.common.Utils;
 import com.mao.core.func.server.P698ServerService;
 import com.mao.core.func.server.P698ServerServiceFactory;
@@ -35,17 +36,22 @@ public class ServiceGetAttrTest {
     @Test
     public void testPapR() throws InterruptedException {
         List<Double> papRList = p698ServerService.getPapR(meterAddress);
+        TestUtils.print("读取正向有功电能成功", papRList);
         assertNotNull(papRList);
         assertEquals(5, papRList.size());
-        System.out.println(papRList);
     }
 
     @Test
     public void testRapR() throws InterruptedException {
-        List<Double> papSList = p698ServerService.getRapR(meterAddress);
-        assertNotNull(papSList);
-        assertEquals(5, papSList.size());
-        System.out.println(papSList);
+        List<Double> rapRList = p698ServerService.getRapR(meterAddress);
+        assertNotNull(rapRList);
+        assertEquals(5, rapRList.size());
+        TestUtils.assertDoubleEquals(132.88D, rapRList.get(0));
+        TestUtils.assertDoubleEquals(25.44D, rapRList.get(1));
+        TestUtils.assertDoubleEquals(22.96D, rapRList.get(2));
+        TestUtils.assertDoubleEquals(40.96D, rapRList.get(3));
+        TestUtils.assertDoubleEquals(43.52D, rapRList.get(4));
+        TestUtils.print("读取反向有功电能成功", rapRList);
     }
 
     @Test
@@ -53,7 +59,7 @@ public class ServiceGetAttrTest {
         List<Double> papSList = p698ServerService.getVoltage(meterAddress);
         assertNotNull(papSList);
         assertEquals(3, papSList.size());
-        assertTrue(Utils.equalsDouble(2.29D, papSList.get(0)));
-        System.out.println(papSList);
+        TestUtils.assertDoubleEquals(2.29D, papSList.get(0));
+        TestUtils.print("读取电压成功", papSList);
     }
 }

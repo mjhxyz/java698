@@ -18,8 +18,8 @@ public class P698Utils {
     private static final byte CLIENT_ADDRESS = 0x0b;
     private static final byte END = 0x16;
 
-    public static <T> double parseToDouble(T src, int scale) {
-        return (float) (Long.parseLong(src.toString()) * Math.pow(10, scale));
+    public static double longParse2Double(long src, int scale) {
+        return (float) (src * Math.pow(10, scale));
     }
 
     public static class P698Msg {

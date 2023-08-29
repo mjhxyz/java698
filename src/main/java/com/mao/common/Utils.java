@@ -6,7 +6,7 @@ package com.mao.common;
  * @date 2023/8/29 11:35
  */
 public class Utils {
-    private static final double EPSILON = 0.000001;
+    private static final double EPSILON = 0.00001;
     /**
      * 判断两个 double 是否相等
      */

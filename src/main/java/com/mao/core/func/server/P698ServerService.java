@@ -129,7 +129,7 @@ public class P698ServerService {
      * @param list 电能表结果
      * @param scale 转换比例
      */
-    private <T> List<Double> doScaleList(List<T> list, int scale){
-        return list.stream().map((o) -> P698Utils.parseToDouble(o, scale)).collect(Collectors.toList());
+    private List<Double> doScaleList(List<Long> list, int scale){
+        return list.stream().map((o) -> P698Utils.longParse2Double(o, scale)).collect(Collectors.toList());
     }
 }
