@@ -97,15 +97,27 @@ public class HexUtils {
         return true;
     }
 
+    public static int bytesToIntUnsigned(byte[] bytes) {
+        // 小端转换, 按照 bytes 的长度转换
+        int value = 0;
+        for (int i = 0; i < bytes.length; i++) {
+            value += (bytes[i] & 0xFF) << (8 * (bytes.length - i - 1));
+        }
+        return value;
+    }
 
     /**
-     * 字节数组转 16 位正整数
+     * 字节数组转整数 有符号
      * @param bytes 字节数组
-     * @return 无符号 long
+     * @return
      */
-    public static int bytesTo16bitInt(byte[] bytes) {
-        // 数据范围为 0…65535
-        return (bytes[1] & 0xff) | ((bytes[0] & 0xff) << 8);
+    public static int bytesToInt(byte[] bytes) {
+        // 小端转换, 按照 bytes 的长度转换
+        int value = 0;
+        for (int i = 0; i < bytes.length; i++) {
+            value += bytes[i] << (8 * (bytes.length - i - 1));
+        }
+        return value;
     }
 
     // 小端转换

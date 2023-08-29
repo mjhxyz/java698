@@ -18,6 +18,10 @@ public class P698Utils {
     private static final byte CLIENT_ADDRESS = 0x0b;
     private static final byte END = 0x16;
 
+    public static double parseToDouble(long src, int scale) {
+        return (float) (src * Math.pow(10, scale));
+    }
+
     public static class P698Msg {
         private byte[] rawData;
         private int invokeId;

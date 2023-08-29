@@ -1,5 +1,6 @@
 package com.mao.server;
 
+import com.mao.common.Utils;
 import com.mao.core.func.server.P698ServerService;
 import com.mao.core.func.server.P698ServerServiceFactory;
 import com.mao.core.p698.AttrEnum;
@@ -9,8 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * 698服务端服务类获取指定属性测试
@@ -50,10 +50,10 @@ public class ServiceGetAttrTest {
 
     @Test
     public void testGetVoltage() throws InterruptedException {
-        List<Integer> papSList = p698ServerService.getVoltage(meterAddress);
+        List<Double> papSList = p698ServerService.getVoltage(meterAddress);
         assertNotNull(papSList);
         assertEquals(3, papSList.size());
-        assertEquals(229, papSList.get(0));
+        assertTrue(Utils.equalsDouble(2.29D, papSList.get(0)));
         System.out.println(papSList);
     }
 }

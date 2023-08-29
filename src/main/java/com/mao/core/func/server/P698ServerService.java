@@ -11,6 +11,7 @@ import com.mao.core.p698.P698Attr;
 import com.mao.core.p698.P698Resp;
 import com.mao.core.p698.P698Utils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -18,6 +19,7 @@ import java.util.function.Supplier;
 
 /**
  * 698服务端服务类
+ *
  * @author mao
  * @date 2023/8/28 14:53
  */
@@ -59,7 +61,7 @@ public class P698ServerService {
         MLogger.log("构建的数据包:" + HexUtils.bytes2HexString(p698Msg.getRawData()));
         List<DataFuture<P698Resp>> request = server.request(p698Msg);
         // TODO 可能有多个响应, 暂时先返回第一个
-        if(request.size() > 0) {
+        if (request.size() > 0) {
             return request.get(0).get(timeout, TimeUnit.MILLISECONDS);
         }
         throw new P698NoConnectionException("没有客户端连接");
@@ -67,7 +69,7 @@ public class P698ServerService {
 
     public <T> T get(String meterAddress, Function<P698Attr, T> func, AttrEnum attrEnum) throws InterruptedException {
         P698Resp resp = get(meterAddress, attrEnum);
-        if(resp == null) { // 超时或者没有客户端连接
+        if (resp == null) { // 超时或者没有客户端连接
             throw new P698TimeOutException("读取属性超时 - " + attrEnum.getName());
         }
         for (P698Attr attr : resp.getAttrs()) {
@@ -83,7 +85,8 @@ public class P698ServerService {
 
     /**
      * 读取电表反向有功电能
-     * @param meterAddress
+     *
+     * @param meterAddress 电表地址 eg: 39 12 19 08 37 00
      * @return 反向有功电能
      * @throws InterruptedException
      */
@@ -93,20 +96,33 @@ public class P698ServerService {
 
     /**
      * 读取正向有功电能
-     * @param meterAddress 电表地址
+     *
+     * @param meterAddress 电表地址 eg: 39 12 19 08 37 00
      * @return 正向有功电能
      * @throws InterruptedException
      */
     public List<Double> getPapR(String meterAddress) throws InterruptedException {
+        // 转换 = -2
         return this.get(meterAddress, (attr) -> (List<Double>) attr.getData(), AttrEnum.P0010);
     }
 
     /**
      * 获取电能表电压
+     *
      * @param meterAddress 电表地址 eg: 39 12 19 08 37 00
      * @return 电压列表 length = 3
      */
-    public List<Integer> getVoltage(String meterAddress) throws InterruptedException {
-        return this.get(meterAddress, (attr) -> (List<Integer>) attr.getData(), AttrEnum.P2000);
+    public List<Double> getVoltage(String meterAddress) throws InterruptedException {
+        // 转换 = -2
+        int scale = -2;
+        return this.get(meterAddress, (attr) -> {
+                List<Integer> data = (List<Integer>) attr.getData();
+                List<Double> result = new ArrayList<>();
+                for (Integer integer : data) {
+                    double v = P698Utils.parseToDouble(integer, scale);
+                    result.add(v);
+                }
+                return result;
+        }, AttrEnum.P2000);
     }
 }
