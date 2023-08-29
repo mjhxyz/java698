@@ -60,7 +60,7 @@ public class ServiceGetAttrTest {
         List<Double> papSList = p698ServerService.getVoltage(meterAddress);
         assertNotNull(papSList);
         assertEquals(3, papSList.size());
-        TestUtils.assertDoubleEquals(229.27D, papSList.get(0));
+        TestUtils.assertDoubleEquals(228.7D, papSList.get(0));
         TestUtils.print("读取电压成功", papSList);
     }
 }

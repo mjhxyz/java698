@@ -130,9 +130,17 @@ public class P698ServerService {
      * @return 电压列表 length = 3
      */
     public List<Double> getVoltage(String meterAddress) throws InterruptedException {
-        // 转换 = -2
-        int scale = -2;
+        int scale = -1;
         return this.get(meterAddress, (e) -> this.doScaleList(e.getDataAsLongList(), scale), AttrEnum.P2000);
+    }
+
+    /**
+     * 获取电能表电流
+     * @param meterAddress 电表地址 eg: 39 12 19 08 37 00
+     */
+    public List<Double> getCurrentValue(String meterAddress) throws InterruptedException {
+        int scale = -3;
+        return this.get(meterAddress, (e) -> this.doScaleList(e.getDataAsLongList(), scale), AttrEnum.P2001);
     }
 
     /**
