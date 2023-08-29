@@ -11,11 +11,11 @@ import com.mao.core.p698.P698Attr;
 import com.mao.core.p698.P698Resp;
 import com.mao.core.p698.P698Utils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * 698服务端服务类
@@ -91,7 +91,10 @@ public class P698ServerService {
      * @throws InterruptedException
      */
     public List<Double> getRapR(String meterAddress) throws InterruptedException {
-        return this.get(meterAddress, (attr) -> (List<Double>) attr.getData(), AttrEnum.P0020);
+        return this.get(meterAddress,
+                (attr) -> this.doScaleList(attr.getDataAsLongList(), -2),
+                AttrEnum.P0020
+        );
     }
 
     /**
@@ -103,7 +106,10 @@ public class P698ServerService {
      */
     public List<Double> getPapR(String meterAddress) throws InterruptedException {
         // 转换 = -2
-        return this.get(meterAddress, (attr) -> (List<Double>) attr.getData(), AttrEnum.P0010);
+        return this.get(meterAddress,
+                (attr) -> this.doScaleList(attr.getDataAsLongList(), -2),
+                AttrEnum.P0010
+        );
     }
 
     /**
@@ -115,14 +121,15 @@ public class P698ServerService {
     public List<Double> getVoltage(String meterAddress) throws InterruptedException {
         // 转换 = -2
         int scale = -2;
-        return this.get(meterAddress, (attr) -> {
-                List<Integer> data = (List<Integer>) attr.getData();
-                List<Double> result = new ArrayList<>();
-                for (Integer integer : data) {
-                    double v = P698Utils.parseToDouble(integer, scale);
-                    result.add(v);
-                }
-                return result;
-        }, AttrEnum.P2000);
+        return this.get(meterAddress, (e) -> this.doScaleList(e.getDataAsLongList(), scale), AttrEnum.P2000);
+    }
+
+    /**
+     * 电能表结果根据scale进行转换
+     * @param list 电能表结果
+     * @param scale 转换比例
+     */
+    private <T> List<Double> doScaleList(List<T> list, int scale){
+        return list.stream().map((o) -> P698Utils.parseToDouble(o, scale)).collect(Collectors.toList());
     }
 }

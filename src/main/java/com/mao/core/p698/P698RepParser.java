@@ -183,7 +183,7 @@ public class P698RepParser {
                     valueBytes[1] = buffer.get(appOffset++);
                     valueBytes[2] = buffer.get(appOffset++);
                     valueBytes[3] = buffer.get(appOffset++);
-                    int value = HexUtils.bytesToIntUnsigned(valueBytes);
+                    long value = HexUtils.bytesToIntUnsigned(valueBytes);
                     // 读取数据
                     tempCurAttrData.add(value);
 
@@ -194,14 +194,14 @@ public class P698RepParser {
                     valueBytes[2] = buffer.get(appOffset++);
                     valueBytes[3] = buffer.get(appOffset++);
                     // 读取数据
-                    int value = HexUtils.bytesToInt(valueBytes);
+                    long value = HexUtils.bytesToInt(valueBytes);
                     tempCurAttrData.add(value);
 
                 } else if (typeId == 0x12) { // long-unsigned 16 位正整数 2B
                     byte[] valueBytes = new byte[2];
                     valueBytes[0] = buffer.get(appOffset++);
                     valueBytes[1] = buffer.get(appOffset++);
-                    int value = HexUtils.bytesToIntUnsigned(valueBytes);
+                    long value = HexUtils.bytesToIntUnsigned(valueBytes);
                     tempCurAttrData.add(value);
                 }
                 // TODO 可能还涉及到 换算-倍数因子的指数

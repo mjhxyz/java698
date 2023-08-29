@@ -18,8 +18,8 @@ public class P698Utils {
     private static final byte CLIENT_ADDRESS = 0x0b;
     private static final byte END = 0x16;
 
-    public static double parseToDouble(long src, int scale) {
-        return (float) (src * Math.pow(10, scale));
+    public static <T> double parseToDouble(T src, int scale) {
+        return (float) (Long.parseLong(src.toString()) * Math.pow(10, scale));
     }
 
     public static class P698Msg {
@@ -53,23 +53,22 @@ public class P698Utils {
             this.invokeIdSupplier = invokeIdSupplier;
         }
 
-        public P698MsgBuilder () {
+        public P698MsgBuilder() {
         }
 
         /**
          * 应用类型
          * ----
          * 0x05: 读取请求
-         *   0x01: 读取单个对象属性
-         *   0x02: 读取若干个对象属性
+         * 0x01: 读取单个对象属性
+         * 0x02: 读取若干个对象属性
          * ----
-         *
          */
         private byte[] appType = new byte[]{0x05, 0x01};
 
         public P698Msg build() {
             int curInvokeId = this.invokeId;
-            if(invokeIdSupplier != null) {
+            if (invokeIdSupplier != null) {
                 curInvokeId = invokeIdSupplier.get();
             }
 
@@ -86,7 +85,7 @@ public class P698Utils {
             totalLength += 2; // 服务类型 + 服务参数 eg: 0x05 0x02: 读取若干个对象属性
             // 服务优先级&服务序号
             totalLength += 1; // 服务优先级&服务序号
-            if(attrEnums.size() > 1) {  // 获取多个对象属性, 才有 SeqOf
+            if (attrEnums.size() > 1) {  // 获取多个对象属性, 才有 SeqOf
                 totalLength += 1; // SeqOf长度
             }
             for (AttrEnum attrEnum : attrEnums) {
@@ -118,7 +117,7 @@ public class P698Utils {
             data[16] = (byte) curInvokeId; // 优先标志:0 一般, 服务序号=5, 和 response APD 中，其值与对应.request APDU 中的相等
             int index = 17;
             // SeqOf长度
-            if(attrEnums.size() > 1) {
+            if (attrEnums.size() > 1) {
                 data[index++] = (byte) attrEnums.size(); // 指标长度
             }
             for (AttrEnum attrEnum : attrEnums) {
@@ -153,7 +152,7 @@ public class P698Utils {
 
         public P698MsgBuilder addAttr(AttrEnum attrEnum) {
             attrEnums.add(attrEnum);
-            if(attrEnums.size() > 1) {
+            if (attrEnums.size() > 1) {
                 appType[1] = (byte) 0x02;
             }
             return this;

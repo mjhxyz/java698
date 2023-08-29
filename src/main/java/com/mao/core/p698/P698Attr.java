@@ -2,6 +2,8 @@ package com.mao.core.p698;
 
 import com.mao.common.HexUtils;
 
+import java.util.List;
+
 /**
  * 698 协议的对象属性描述
  *
@@ -41,6 +43,10 @@ public class P698Attr {
 
     public Object getData() {
         return data;
+    }
+
+    public List<Long> getDataAsLongList() {
+        return (List<Long>) data;
     }
 
     public void setData(Object data) {

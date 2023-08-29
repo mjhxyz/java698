@@ -97,7 +97,7 @@ public class HexUtils {
         return true;
     }
 
-    public static int bytesToIntUnsigned(byte[] bytes) {
+    public static long bytesToIntUnsigned(byte[] bytes) {
         // 小端转换, 按照 bytes 的长度转换
         int value = 0;
         for (int i = 0; i < bytes.length; i++) {
