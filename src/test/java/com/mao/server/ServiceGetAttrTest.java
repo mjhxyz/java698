@@ -1,16 +1,12 @@
 package com.mao.server;
 
 import com.mao.TestUtils;
-import com.mao.common.Utils;
 import com.mao.core.func.server.P698ServerService;
 import com.mao.core.func.server.P698ServerServiceFactory;
-import com.mao.core.p698.AttrEnum;
-import com.mao.core.p698.P698Resp;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -28,15 +24,9 @@ public class ServiceGetAttrTest {
 
     @BeforeAll
     static void init() throws InterruptedException {
-        CountDownLatch countDownLatch = new CountDownLatch(1);
         p698ServerService = P698ServerServiceFactory.createService(host, port);
         p698ServerService.setInvokeSupplier(() -> 0); //  用于测试，因为模拟的数据 invokeId 都是 0
-        p698ServerService.addConnectionListener((connection) -> {
-            TestUtils.print("连接事件", connection);
-            countDownLatch.countDown();
-        });
-        TestUtils.print("Test", "服务启动成功, 等待客户机连接...");
-        countDownLatch.await();
+        TestUtils.waitForConnection(p698ServerService);
     }
 
     @Test

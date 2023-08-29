@@ -1,5 +1,6 @@
 package com.mao.server;
 
+import com.mao.TestUtils;
 import com.mao.core.func.server.P698ServerService;
 import com.mao.core.func.server.P698ServerServiceFactory;
 import com.mao.core.p698.AttrEnum;
@@ -26,8 +27,7 @@ public class ServiceGetTest {
     static void init() throws InterruptedException {
         p698ServerService = P698ServerServiceFactory.createService(host, port);
         p698ServerService.setInvokeSupplier(() -> 0); //  用于测试，因为模拟的数据 invokeId 都是 0
-
-        Thread.sleep(10_000); // 等待客户机连接...
+        TestUtils.waitForConnection(p698ServerService);
     }
 
     @Test
