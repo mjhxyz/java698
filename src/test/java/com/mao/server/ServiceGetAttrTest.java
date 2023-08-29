@@ -32,6 +32,11 @@ public class ServiceGetAttrTest {
     @Test
     public void testPapR() throws InterruptedException {
         List<Double> papRList = p698ServerService.getPapR(meterAddress);
+        TestUtils.assertDoubleEquals(132.88D, papRList.get(0));
+        TestUtils.assertDoubleEquals(25.44D, papRList.get(1));
+        TestUtils.assertDoubleEquals(22.96D, papRList.get(2));
+        TestUtils.assertDoubleEquals(40.96D, papRList.get(3));
+        TestUtils.assertDoubleEquals(43.52D, papRList.get(4));
         TestUtils.print("读取正向有功电能成功", papRList);
         assertNotNull(papRList);
         assertEquals(5, papRList.size());
@@ -55,7 +60,7 @@ public class ServiceGetAttrTest {
         List<Double> papSList = p698ServerService.getVoltage(meterAddress);
         assertNotNull(papSList);
         assertEquals(3, papSList.size());
-        TestUtils.assertDoubleEquals(2.29D, papSList.get(0));
+        TestUtils.assertDoubleEquals(229.27D, papSList.get(0));
         TestUtils.print("读取电压成功", papSList);
     }
 }
