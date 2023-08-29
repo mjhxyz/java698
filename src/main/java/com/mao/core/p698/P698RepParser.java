@@ -107,7 +107,7 @@ public class P698RepParser {
         // eg: 0x85 0x02 读取若干个属性
         //     0x85 0x01 读取单个属性
         int opCode = buffer.get(appOffset++) & 0xFF;
-        if(opCode == 0xee) {
+        if (opCode == 0xee) {
             // 异常响应出现
             MLogger.log("异常响应出现");
         }
@@ -154,7 +154,7 @@ public class P698RepParser {
 
             // 5.5 结果类型 1(数据)
             int resultType = buffer.get(appOffset++) & 0xFF;
-            if(resultType == 0x00) { // 0:(错误)
+            if (resultType == 0x00) { // 0:(错误)
                 byte darType = buffer.get(appOffset++); // 这个就是 错误码
                 attrObj.setErrorCode(darType);
                 rep.addAttr(attrObj);
@@ -177,14 +177,14 @@ public class P698RepParser {
                 byte typeId = buffer.get(appOffset++);
                 // 假设是浮点数, 那就占用 4B
                 if (typeId == 0x06) {
-                    // double-long-unsigned 无符号
+                    // double-long-unsigned 无符号, 小端模式
                     byte[] valueBytes = new byte[4];
                     valueBytes[0] = buffer.get(appOffset++);
                     valueBytes[1] = buffer.get(appOffset++);
                     valueBytes[2] = buffer.get(appOffset++);
                     valueBytes[3] = buffer.get(appOffset++);
-                    // 读取数据
                     double value = HexUtils.bytes2float(valueBytes);
+                    // 读取数据
                     tempCurAttrData.add(value);
                     // MLogger.log("获取 double-long-unsigned 数据: " + value);
                 } else if (typeId == 0x05) {
@@ -198,6 +198,12 @@ public class P698RepParser {
                     double value = HexUtils.bytes2float(valueBytes);
                     tempCurAttrData.add(value);
                     // MLogger.log("获取 double-long 数据: " + value);
+                } else if (typeId == 0x12) { // long-unsigned 16 位正整数 2B
+                    byte[] valueBytes = new byte[4];
+                    valueBytes[0] = buffer.get(appOffset++);
+                    valueBytes[1] = buffer.get(appOffset++);
+                    int value = HexUtils.bytesTo16bitInt(valueBytes);
+                    tempCurAttrData.add(value);
                 }
                 // TODO 可能还涉及到 换算-倍数因子的指数
             }

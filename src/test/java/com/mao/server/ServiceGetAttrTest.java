@@ -47,4 +47,13 @@ public class ServiceGetAttrTest {
         assertEquals(5, papSList.size());
         System.out.println(papSList);
     }
+
+    @Test
+    public void testGetVoltage() throws InterruptedException {
+        List<Integer> papSList = p698ServerService.getVoltage(meterAddress);
+        assertNotNull(papSList);
+        assertEquals(3, papSList.size());
+        assertEquals(229, papSList.get(0));
+        System.out.println(papSList);
+    }
 }

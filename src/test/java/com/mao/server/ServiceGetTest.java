@@ -7,6 +7,7 @@ import com.mao.core.p698.P698Resp;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
@@ -55,6 +56,16 @@ public class ServiceGetTest {
     public void testGetOneAttr3() throws InterruptedException {
         P698Resp p698Resp = p698ServerService.get(
                 meterAddress, AttrEnum.P0020
+        );
+        assertNotNull(p698Resp);
+        System.out.println(p698Resp);
+    }
+
+    @Test
+    public void testGetVoltage() throws InterruptedException {
+        // 测试获取电压值
+        P698Resp p698Resp = p698ServerService.get(
+                meterAddress, AttrEnum.P2000
         );
         assertNotNull(p698Resp);
         System.out.println(p698Resp);

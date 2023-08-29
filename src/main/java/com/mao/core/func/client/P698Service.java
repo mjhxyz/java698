@@ -57,7 +57,7 @@ public class P698Service {
     // 处理单个属性值
     public <T> T get(String meterAddress, Function<P698Attr, T> func, AttrEnum attrEnum) throws InterruptedException {
         P698Resp resp = get(meterAddress, attrEnum);
-        if(resp == null) { // 超时
+        if (resp == null) { // 超时
             throw new P698TimeOutException("读取属性超时 - " + attrEnum.getName());
         }
         for (P698Attr attr : resp.getAttrs()) {
@@ -82,11 +82,13 @@ public class P698Service {
 
     /**
      * 读取反向有功电能
+     *
      * @param meterAddress 电表地址 eg: 39 12 19 08 37 00
      */
     public List<Double> getRapR(String meterAddress) throws InterruptedException {
         return this.get(meterAddress, (attr) -> (List<Double>) attr.getData(), AttrEnum.P0020);
     }
+
 
     public int getId() {
         return id;
@@ -94,6 +96,7 @@ public class P698Service {
 
     /**
      * 设置服务标志, 用于调试区分不同的服务
+     *
      * @param id
      */
     public void setId(int id) {

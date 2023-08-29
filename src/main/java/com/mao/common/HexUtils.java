@@ -97,6 +97,17 @@ public class HexUtils {
         return true;
     }
 
+
+    /**
+     * 字节数组转 16 位正整数
+     * @param bytes 字节数组
+     * @return 无符号 long
+     */
+    public static int bytesTo16bitInt(byte[] bytes) {
+        // 数据范围为 0…65535
+        return (bytes[1] & 0xff) | ((bytes[0] & 0xff) << 8);
+    }
+
     // 小端转换
     public static float bytes2float(byte[] bytes) {
         int l;

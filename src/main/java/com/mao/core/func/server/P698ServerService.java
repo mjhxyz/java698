@@ -4,6 +4,7 @@ import com.mao.common.HexUtils;
 import com.mao.common.MLogger;
 import com.mao.core.conn.client.DataFuture;
 import com.mao.core.conn.server.P698Server;
+import com.mao.core.exception.P698NoConnectionException;
 import com.mao.core.exception.P698TimeOutException;
 import com.mao.core.p698.AttrEnum;
 import com.mao.core.p698.P698Attr;
@@ -61,7 +62,7 @@ public class P698ServerService {
         if(request.size() > 0) {
             return request.get(0).get(timeout, TimeUnit.MILLISECONDS);
         }
-        return null; // 没有客户端连接
+        throw new P698NoConnectionException("没有客户端连接");
     }
 
     public <T> T get(String meterAddress, Function<P698Attr, T> func, AttrEnum attrEnum) throws InterruptedException {
@@ -80,13 +81,32 @@ public class P698ServerService {
         throw new RuntimeException("属性未找到");
     }
 
-    // 读取反向有功电能
+    /**
+     * 读取电表反向有功电能
+     * @param meterAddress
+     * @return 反向有功电能
+     * @throws InterruptedException
+     */
     public List<Double> getRapR(String meterAddress) throws InterruptedException {
         return this.get(meterAddress, (attr) -> (List<Double>) attr.getData(), AttrEnum.P0020);
     }
 
-    // 读取正向有功电能
+    /**
+     * 读取正向有功电能
+     * @param meterAddress 电表地址
+     * @return 正向有功电能
+     * @throws InterruptedException
+     */
     public List<Double> getPapR(String meterAddress) throws InterruptedException {
         return this.get(meterAddress, (attr) -> (List<Double>) attr.getData(), AttrEnum.P0010);
+    }
+
+    /**
+     * 获取电能表电压
+     * @param meterAddress 电表地址 eg: 39 12 19 08 37 00
+     * @return 电压列表 length = 3
+     */
+    public List<Integer> getVoltage(String meterAddress) throws InterruptedException {
+        return this.get(meterAddress, (attr) -> (List<Integer>) attr.getData(), AttrEnum.P2000);
     }
 }
