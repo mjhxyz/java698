@@ -10,7 +10,7 @@ public enum AttrEnum {
     P0010("正向有功电能", HexUtils.toB("00 10")),
     P0020("反向有功电能", HexUtils.toB("00 20")),
     P2000("电压", HexUtils.toB("20 00")),
-    P2001("电流", HexUtils.toB("20 00")),
+    P2001("电流", HexUtils.toB("20 01")),
     ;
 
 

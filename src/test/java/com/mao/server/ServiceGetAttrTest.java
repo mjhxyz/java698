@@ -63,4 +63,12 @@ public class ServiceGetAttrTest {
         TestUtils.assertDoubleEquals(228.7D, papSList.get(0));
         TestUtils.print("读取电压成功", papSList);
     }
+
+    @Test
+    public void testGetCurrentValue() throws InterruptedException {
+        List<Double> papSList = p698ServerService.getCurrentValue(meterAddress);
+        assertNotNull(papSList);
+        TestUtils.assertDoubleEquals(6.383D, papSList.get(0));
+        TestUtils.print("读取电流成功", papSList);
+    }
 }

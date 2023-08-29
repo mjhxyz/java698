@@ -194,7 +194,7 @@ public class P698RepParser {
                     valueBytes[2] = buffer.get(appOffset++);
                     valueBytes[3] = buffer.get(appOffset++);
                     // 读取数据
-                    long value = HexUtils.bytesToInt(valueBytes);
+                    long value = HexUtils.bytesToIntUnsigned(valueBytes);
                     tempCurAttrData.add(value);
 
                 } else if (typeId == 0x12) { // long-unsigned 16 位正整数 2B
