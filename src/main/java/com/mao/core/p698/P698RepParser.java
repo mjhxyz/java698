@@ -203,6 +203,11 @@ public class P698RepParser {
                     valueBytes[1] = buffer.get(appOffset++);
                     long value = HexUtils.bytesToIntUnsigned(valueBytes);
                     tempCurAttrData.add(value);
+                } else if (typeId == 0x04) { // bit string 位串
+                    int bitLength = buffer.get(appOffset++) & 0xFF;
+                    // 获取字节长度 0-8bit 1B, 9-16bit 2B, 向上取整
+                    int byteLength = (bitLength + 7) / 8;
+                    byte[] valueBytes = new byte[byteLength];
                 }
                 // TODO 可能还涉及到 换算-倍数因子的指数
             }
